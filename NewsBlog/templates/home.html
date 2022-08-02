@@ -15,6 +15,7 @@
                     <h3 class="post-subtitle">{{ post.text_post|truncatewords:50|censor }} </h3>
                 </a>
                 <p class="post-meta">
+                    {{ posts.author_post() }}
                     Опубликовано: {{ post.time_post|date:'M d Y h:m' }}
                 </p>
             </div>
@@ -22,5 +23,34 @@
         </div>
     </div>
 </div>
+<!-- Проверяем что поддерживается постраничный вывод -->
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            {% if is_paginated %}
 
+    <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+    {% if page_obj.has_previous %}
+        <a href="?page=1">Начало</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+    {% endif %}
+
+    <!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">>>></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Конец</a>
+    {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock content %}

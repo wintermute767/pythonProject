@@ -34,12 +34,15 @@ class Post(models.Model):
 
     types_post = models.CharField(max_length=2, choices=TYPE_POST, default=news)
     author_post = models.ForeignKey(Author, on_delete = models.CASCADE)
-    authorPost=author_post.name
+
     time_post = models.DateTimeField(auto_now_add=True)
     category_post = models.ManyToManyField(Category, through = 'PostCategory')
     heading_post = models.CharField(max_length=128, default="Something")
     text_post = models.TextField()
     rating_post = models.IntegerField(default=0)
+
+    def author_post(self):
+        return self.post_set.all()
 
     def get_absolute_url(self):
         """
