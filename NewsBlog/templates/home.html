@@ -15,8 +15,7 @@
                     <h3 class="post-subtitle">{{ post.text_post|truncatewords:50|censor }} </h3>
                 </a>
                 <p class="post-meta">
-                    {{ posts.author_post() }}
-                    Опубликовано: {{ post.time_post|date:'M d Y h:m' }}
+                    Опубликовал {{ post.author.post_author.username }}: {{ post.time_post|date:'M d Y h:m' }}
                 </p>
             </div>
             {% endfor %}

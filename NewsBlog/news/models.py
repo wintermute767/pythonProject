@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
-# Create your models here.
+
 
 
 class Author(models.Model):
@@ -20,8 +20,14 @@ class Author(models.Model):
         self.rating_author = pRat * 3 + cRat
         self.save()
 
+    def __str__(self):
+        return self.post_author.username
+
 class Category(models.Model):
     name_category = models.CharField(max_length=64, default="Unknown", unique = True)
+
+    def __str__(self):
+        return self.name_category
 
 class Post(models.Model):
     article = 'AR'
@@ -33,22 +39,18 @@ class Post(models.Model):
     ]
 
     types_post = models.CharField(max_length=2, choices=TYPE_POST, default=news)
-    author_post = models.ForeignKey(Author, on_delete = models.CASCADE)
-
+    author = models.ForeignKey(Author, on_delete = models.CASCADE, default=1)
     time_post = models.DateTimeField(auto_now_add=True)
-    category_post = models.ManyToManyField(Category, through = 'PostCategory')
+    category = models.ManyToManyField(Category, through = 'PostCategory', default=1)
     heading_post = models.CharField(max_length=128, default="Something")
-    text_post = models.TextField()
+    text_post = models.TextField(default="Something")
     rating_post = models.IntegerField(default=0)
 
-    def author_post(self):
-        return self.post_set.all()
+
 
     def get_absolute_url(self):
-        """
-        Returns the url to access a particular instance of the model.
-        """
-        return reverse('post-detail-view', args=[str(self.id)])
+        return f'/{self.id}'
+
     def like(self):
         self.rating_post += 1
         self.save()
@@ -60,13 +62,22 @@ class Post(models.Model):
     def preview(self):
         return self.text_post[0:124]+"..."
 
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+        return super().get(request, *args, **kwargs)
+
+
 class PostCategory(models.Model):
     post_category = models.ForeignKey(Post, on_delete=models.CASCADE)
     category_post = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 class Comment(models.Model):
-    post_comment = models.ForeignKey(Post, on_delete=models.CASCADE)
-    user_comment = models.ForeignKey(User, on_delete=models.CASCADE)
+    post_comment = models.ForeignKey(Post, on_delete=models.CASCADE, default=1)
+    user_comment = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     text_comment = models.TextField()
     time_comment = models.DateTimeField(auto_now_add=True)
     rating_comment = models.IntegerField(default=0)
@@ -78,9 +89,3 @@ class Comment(models.Model):
     def dislike(self):
         self.rating_comment -=1
         self.save()
-
-    def __str__(self):
-        try:
-            return self.post_comment.author_post.post_author.username
-        except:
-            return self.post_comment.username
