@@ -38,12 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'news',
+    'sign',
     'django_filters',
+
     # The following apps are required:
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.mailru',
     'allauth.socialaccount.providers.google',

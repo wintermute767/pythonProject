@@ -1,9 +1,9 @@
-from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Post
 from .filters import PostsFilter
 from .forms import PostForm
+
 
 class PostsList(ListView):
     model = Post
@@ -28,21 +28,22 @@ class SearchList(ListView):
         context['filter'] = PostsFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     template_name = 'create.html'
     form_class = PostForm
+    permission_required = ('news.add_post',)
 
-
-class PostUpdateView(LoginRequiredMixin, UpdateView):
+class PostUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     template_name = 'create.html'
     form_class = PostForm
+    permission_required = ('news.change_post',)
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
 
-class PostDeleteView(LoginRequiredMixin, DeleteView):
+class PostDeleteView(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     template_name = 'delete.html'
     queryset = Post.objects.all()
     success_url = '/search'
-
+    permission_required = ('news.delete_post',)
