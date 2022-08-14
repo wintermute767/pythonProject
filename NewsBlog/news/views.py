@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post
 from .filters import PostsFilter
 from .forms import PostForm
@@ -28,12 +28,12 @@ class SearchList(ListView):
         context['filter'] = PostsFilter(self.request.GET, queryset=self.get_queryset())
         return context
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     template_name = 'create.html'
     form_class = PostForm
 
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'create.html'
     form_class = PostForm
 
@@ -41,7 +41,7 @@ class PostUpdateView(UpdateView):
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'delete.html'
     queryset = Post.objects.all()
     success_url = '/search'
