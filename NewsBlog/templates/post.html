@@ -14,6 +14,15 @@
                 <p class="post-subtitle">{{ post.text_post }} </p>
                 <p class="post-meta">
                     Опубликовано: {{ post.time_post|date:'M d Y h:m' }}
+                <br>
+
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <em>Жанр: {{ post.get_category }}</em>
+                    <button type='submit'>Подписаться</button>
+                </form>
+
+                </form>
                 </p>
             </div>
         </div>

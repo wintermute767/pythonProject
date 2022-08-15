@@ -3,7 +3,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from .models import Post
 from .filters import PostsFilter
 from .forms import PostForm
-
+from django.core.mail import send_mail
+from django.shortcuts import redirect
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from datetime import datetime
 
 class PostsList(ListView):
     model = Post
@@ -17,6 +21,31 @@ class PostDetail(DetailView):
     template_name = 'post.html'
     context_object_name = 'post'
 
+    def post(self, *args, **kwargs):
+
+
+        appointment = {
+            "date": PostDetail.get_object(self).time_post,
+            "client_name":self.request.user.username,
+            "message": PostDetail.get_object(self).text_post,
+        }
+
+        html_content = render_to_string(
+            'email.html',
+            {
+                'appointment': appointment,
+            }
+        )
+        msg = EmailMultiAlternatives(
+            PostDetail.get_object(self).heading_post,
+            PostDetail.get_object(self).preview(),
+            'y4ndexp0chta766@yandex.ru',
+            ['andrew_catboy@mail.ru'],
+        )
+        msg.attach_alternative(html_content, "text/html")
+
+        msg.send()
+        return redirect('home')
 
 class SearchList(ListView):
     model = Post

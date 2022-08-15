@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
-
+from django.core.mail import send_mail
 
 
 class Author(models.Model):
@@ -25,6 +25,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     name_category = models.CharField(max_length=64, default="Unknown", unique = True)
+    subscribers = models.ManyToManyField(User)
 
     def __str__(self):
         return self.name_category
@@ -46,10 +47,12 @@ class Post(models.Model):
     text_post = models.TextField(default="Something")
     rating_post = models.IntegerField(default=0)
 
-
-
     def get_absolute_url(self):
         return f'/{self.id}'
+
+    def get_date_to_massage(self):
+
+        return self.text_post
 
     def like(self):
         self.rating_post += 1
@@ -60,16 +63,17 @@ class Post(models.Model):
         self.save()
 
     def preview(self):
-        return self.text_post[0:124]+"..."
+        return self.text_post[0:50]+"..."
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
 
         if form.is_valid():
             form.save()
-
         return super().get(request, *args, **kwargs)
 
+    def get_category(self):
+        return self.category.values('name_category')[0]['name_category']
 
 class PostCategory(models.Model):
     post_category = models.ForeignKey(Post, on_delete=models.CASCADE)

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'news',
     'sign',
     'django_filters',
@@ -166,3 +167,9 @@ SOCIAL_AUTH_MAILRU_OAUTH2_SECRET = '30ce58ab41864d89917c88e502143973'
 
 
 ACCOUNT_FORMS = {'signup': 'news.forms.BasicSignupForm'}
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_SSL = True
