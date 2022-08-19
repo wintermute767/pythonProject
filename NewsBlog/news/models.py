@@ -25,7 +25,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     name_category = models.CharField(max_length=64, default="Unknown", unique = True)
-    subscribers = models.ManyToManyField(User)
+    subscribers = models.ManyToManyField(User, through='UserCategory', default=1)
 
     def __str__(self):
         return self.name_category
@@ -46,6 +46,9 @@ class Post(models.Model):
     heading_post = models.CharField(max_length=128, default="Something")
     text_post = models.TextField(default="Something")
     rating_post = models.IntegerField(default=0)
+
+    def get_user_now(self):
+        return self.request.user
 
     def get_absolute_url(self):
         return f'/{self.id}'
@@ -78,6 +81,10 @@ class Post(models.Model):
 class PostCategory(models.Model):
     post_category = models.ForeignKey(Post, on_delete=models.CASCADE)
     category_post = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+class UserCategory(models.Model):
+    user_category = models.ForeignKey(User, on_delete=models.CASCADE)
+    category_user = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 class Comment(models.Model):
     post_comment = models.ForeignKey(Post, on_delete=models.CASCADE, default=1)

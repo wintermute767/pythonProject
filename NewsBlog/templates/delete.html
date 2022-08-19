@@ -13,8 +13,7 @@
                 <h2 class="post-title">{{ post.heading_post }}</h2>
                 <p class="post-subtitle">{{ post.text_post }} </p>
                 <p class="post-meta">
-                    Опубликовано: {{ post.time_post|date:'M d Y h:m' }}
-
+                    Опубликовал {{ post.author.post_author.username }}: {{ post.time_post|date:'M d Y h:m' }}
                 </p>
                 <form method="POST">
                 {% csrf_token %}

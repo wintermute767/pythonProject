@@ -12,7 +12,6 @@ class PostForm(ModelForm):
 
 
 
-
 class BasicSignupForm(SignupForm):
     first_name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': ('First name')}))
     last_name = forms.CharField(max_length=30, widget=forms.TextInput(attrs={'placeholder': ('Last name')}))

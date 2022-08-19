@@ -170,6 +170,6 @@ ACCOUNT_FORMS = {'signup': 'news.forms.BasicSignupForm'}
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = 'y4ndexp0chta766'
+EMAIL_HOST_PASSWORD = 'qpefadbeetcfxwmy'
 EMAIL_USE_SSL = True
