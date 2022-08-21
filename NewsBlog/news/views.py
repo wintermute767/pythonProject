@@ -1,13 +1,12 @@
+from datetime import date
+
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Post
+from .models import Post, Category, Author
 from .filters import PostsFilter
 from .forms import PostForm
-from django.core.mail import send_mail
 from django.shortcuts import redirect
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from datetime import datetime
+from django.db.models.signals import post_save
 
 class PostsList(ListView):
     model = Post
@@ -21,31 +20,18 @@ class PostDetail(DetailView):
     template_name = 'post.html'
     context_object_name = 'post'
 
-    def post(self, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+
+        #Проверяем есть ли подписан ли пользователь на текущую категорию
+        #Если нет, то добавлем его на подписку и выслыаем письмо на почту
+        user_now = self.request.user
+        category_now= Category.objects.get(name_category=PostDetail.get_object(self).get_category())
+        if not user_now.category_set.filter(name_category=category_now).exists():
+            user_now.category_set.add(category_now)
 
 
-        appointment = {
-            "date": PostDetail.get_object(self).time_post,
-            "client_name":self.request.user.username,
-            "message": PostDetail.get_object(self).text_post,
-        }
-
-        html_content = render_to_string(
-            'email.html',
-            {
-                'appointment': appointment,
-            }
-        )
-        msg = EmailMultiAlternatives(
-            PostDetail.get_object(self).heading_post,
-            PostDetail.get_object(self).preview(),
-            'y4ndexp0chta766@yandex.ru',
-            ['andrew_catboy@mail.ru'],
-        )
-        msg.attach_alternative(html_content, "text/html")
-
-        msg.send()
         return redirect('home')
+
 
 class SearchList(ListView):
     model = Post
@@ -61,6 +47,19 @@ class PostCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     template_name = 'create.html'
     form_class = PostForm
     permission_required = ('news.add_post',)
+
+    def form_valid(self, form):
+        print(date.today())
+        print(Post.objects.filter(time_post=date.today()).count())
+        if Post.objects.filter(time_post=date.today(), author=Author.objects.get(post_author=self.request.user)).count() < 3:
+            print("Сохранение объекта Author.objects.get(post_author=self.request.user)")
+            self.object = form.save(commit=False)
+            self.object.author = Author.objects.get(post_author=self.request.user)
+            return super().form_valid(form)
+        else:
+            print("Объект не сохранен")
+            return messages.error(self.request, 'Пользователь может публиковать не более трёх новостей в сутки')
+
 
 class PostUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     template_name = 'create.html'

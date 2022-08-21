@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'news',
+    'news.apps.NewsConfig',
     'sign',
     'django_filters',
 
@@ -155,9 +155,11 @@ LOGIN_URL = '/accounts/login/'
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL='home'
 
 SOCIAL_AUTH_MAILRU_KEY = '77a5efd22a3e460090b42dabc9e269b7'
 SOCIAL_AUTH_MAILRU_SECRET = '30ce58ab41864d89917c88e502143973'
@@ -173,3 +175,5 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'y4ndexp0chta766'
 EMAIL_HOST_PASSWORD = 'qpefadbeetcfxwmy'
 EMAIL_USE_SSL = True
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER+"@yandex.ru"
