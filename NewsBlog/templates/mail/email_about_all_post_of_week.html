@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Здравствуй! За последнюю неделю в твоём любимом разделе появилось несколько новых статей! </h2>
+    {% for email in body_email %}
+            <div class="post-preview">
+                <p><a href="{{ email.post_url }}">{{email.title}}</a></p>
+                <p> {{ email.message}} </p>
+                <em>Опубликовано: {{ email.date|date:"d-M-Y"}} </em>
+            </div>
+    {% endfor %}
+
+
+</body>
+</html>

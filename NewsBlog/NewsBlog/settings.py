@@ -9,8 +9,16 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from dotenv import load_dotenv
+
 
 from pathlib import Path
+import os
+
+load_dotenv()
+env_path = Path('.')/'.env'
+load_dotenv(dotenv_path=env_path)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,6 +59,8 @@ INSTALLED_APPS = [
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.mailru',
     'allauth.socialaccount.providers.google',
+
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
@@ -140,7 +150,7 @@ SITE_ID = 1
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
-
+LOCAL_HOST_HTTP="http://127.0.0.1:8000"
 AUTHENTICATION_BACKENDS = [
 
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -161,19 +171,22 @@ ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL='home'
 
-SOCIAL_AUTH_MAILRU_KEY =
-SOCIAL_AUTH_MAILRU_SECRET =
+SOCIAL_AUTH_MAILRU_KEY = os.getenv("SOCIAL_AUTH_MAILRU_KEY")
+SOCIAL_AUTH_MAILRU_SECRET = os.getenv("SOCIAL_AUTH_MAILRU_SECRET")
 
-SOCIAL_AUTH_MAILRU_OAUTH2_KEY =
-SOCIAL_AUTH_MAILRU_OAUTH2_SECRET =
+SOCIAL_AUTH_MAILRU_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_MAILRU_OAUTH2_KEY")
+SOCIAL_AUTH_MAILRU_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_MAILRU_OAUTH2_SECRET")
 
 
 ACCOUNT_FORMS = {'signup': 'news.forms.BasicSignupForm'}
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'y4ndexp0chta766'
-EMAIL_HOST_PASSWORD =
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_SSL = True
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER+"@yandex.ru"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds

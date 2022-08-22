@@ -6,8 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    <h2>Здравствуй, {{email.client_name}}. Новая статья в твоём любимом разделе! </h2>
+    <h2>Здравствуй! Новая статья в твоём любимом разделе! </h2>
+    <p><a href="{{ email.post_url }}">{{email.title}}</a></p>
     <p> {{ email.message|truncatechars:50 }} </p>
     <em>Опубликовано: {{ email.date|date:"d-M-Y"}} </em>
+
 </body>
 </html>

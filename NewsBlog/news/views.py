@@ -49,16 +49,14 @@ class PostCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     permission_required = ('news.add_post',)
 
     def form_valid(self, form):
-        print(date.today())
-        print(Post.objects.filter(time_post=date.today()).count())
-        if Post.objects.filter(time_post=date.today(), author=Author.objects.get(post_author=self.request.user)).count() < 3:
+
+        if Post.objects.filter(time_post__gte=date.today(), author=Author.objects.get(post_author=self.request.user)).count() < 3:
             print("Сохранение объекта Author.objects.get(post_author=self.request.user)")
             self.object = form.save(commit=False)
             self.object.author = Author.objects.get(post_author=self.request.user)
             return super().form_valid(form)
         else:
-            print("Объект не сохранен")
-            return messages.error(self.request, 'Пользователь может публиковать не более трёх новостей в сутки')
+            return redirect('home')
 
 
 class PostUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
